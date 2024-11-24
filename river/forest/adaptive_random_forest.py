@@ -155,13 +155,13 @@ class BaseForest(base.Ensemble):
             self._init_ensemble(sorted(x.keys()))
 
         for i, model in enumerate(self):
-            y_pred = model.predict_one(x)
+            y_pred = model.predict_one(x)  # type:ignore[attr-defined]
 
             # Update performance evaluator
             self._metrics[i].update(
-                y_true=y,
+                y_true=y,  # type:ignore[arg-type]
                 y_pred=(
-                    model.predict_proba_one(x)
+                    model.predict_proba_one(x)  # type:ignore[attr-defined]
                     if isinstance(self.metric, metrics.base.ClassificationMetric)
                     and not self.metric.requires_labels
                     else y_pred
@@ -173,7 +173,7 @@ class BaseForest(base.Ensemble):
                 if not self._warning_detection_disabled and self._background[i] is not None:
                     self._background[i].learn_one(x=x, y=y, w=k)  # type: ignore
 
-                model.learn_one(x=x, y=y, w=k)
+                model.learn_one(x=x, y=y, w=k)  # type:ignore[attr-defined]
 
                 drift_input = None
                 if not self._warning_detection_disabled:
@@ -198,7 +198,7 @@ class BaseForest(base.Ensemble):
 
                     if self._drift_detectors[i].drift_detected:
                         if not self._warning_detection_disabled and self._background[i] is not None:
-                            self.data[i] = self._background[i]
+                            self.data[i] = self._background[i]  # type:ignore[assignment]
                             self._background[i] = None
                             self._warning_detectors[i] = self.warning_detector.clone()
                             self._drift_detectors[i] = self.drift_detector.clone()
@@ -671,7 +671,7 @@ class ARFClassifier(BaseForest, base.Classifier):
             return y_pred  # type: ignore
 
         for i, model in enumerate(self):
-            y_proba_temp = model.predict_proba_one(x)
+            y_proba_temp = model.predict_proba_one(x)  # type:ignore[attr-defined]
             metric_value = self._metrics[i].get()
             if not self.disable_weighted_vote and metric_value > 0.0:
                 y_proba_temp = {k: val * metric_value for k, val in y_proba_temp.items()}
@@ -952,7 +952,7 @@ class ARFRegressor(BaseForest, base.Regressor):
             weights = np.zeros(self.n_models)
             sum_weights = 0.0
             for i, model in enumerate(self):
-                y_pred[i] = model.predict_one(x)
+                y_pred[i] = model.predict_one(x)  # type:ignore[attr-defined]
                 weights[i] = self._metrics[i].get()
                 sum_weights += weights[i]
 
@@ -964,7 +964,7 @@ class ARFRegressor(BaseForest, base.Regressor):
                 y_pred *= weights
         else:
             for i, model in enumerate(self):
-                y_pred[i] = model.predict_one(x)
+                y_pred[i] = model.predict_one(x)  # type:ignore[attr-defined]
 
         if self.aggregation_method == self._MEAN:
             y_pred = y_pred.mean()
