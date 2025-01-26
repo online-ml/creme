@@ -720,7 +720,7 @@ class OXTRegressor(ExtraTrees, base.Regressor):
             weights = []
 
             for perf, model in zip(self._perfs, self.models):
-                preds.append(model.predict_one(x))
+                preds.append(model.predict_one(x))  # type:ignore[attr-defined]
                 weights.append(perf.get())
 
             sum_weights = sum(weights)
@@ -733,6 +733,6 @@ class OXTRegressor(ExtraTrees, base.Regressor):
                     preds = [(w / sum_weights) * pred for w, pred in zip(weights, preds)]
                 return sum(preds)
         else:
-            preds = [model.predict_one(x) for model in self.models]
+            preds = [model.predict_one(x) for model in self.models]  # type:ignore[attr-defined]
 
         return sum(preds) / len(preds)

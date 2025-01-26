@@ -170,7 +170,7 @@ class AMFClassifier(AMFLearner, base.Classifier):
         self._classes: set[base.typing.ClfTarget] = set()
 
     def _initialize_trees(self) -> None:
-        self.data: list[MondrianTreeClassifier] = []
+        self.data: list[MondrianTreeClassifier] = []  # type:ignore[assignment]
         for _ in range(self.n_estimators):
             tree = MondrianTreeClassifier(
                 self.step,
@@ -290,7 +290,7 @@ class AMFRegressor(AMFLearner, base.Regressor):
     def _initialize_trees(self) -> None:
         """Initialize the forest."""
 
-        self.data: list[MondrianTreeRegressor] = []
+        self.data: list[MondrianTreeRegressor] = []  # type:ignore[assignment]
         for _ in range(self.n_estimators):
             # We don't want to have the same stochastic scheme for each tree, or it'll break the randomness
             # Hence we introduce a new seed for each, that is derived of the given seed by a deterministic process
